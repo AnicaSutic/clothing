@@ -4,11 +4,12 @@ import "./index.scss";
 export default function CustomButton({
   children,
   isGoogleSignIn,
+  inverted,
   ...otherProps
 }) {
   return (
     <button
-      className={`custom-button ${isGoogleSignIn ? "google-sign-in" : ""} `}
+      className={`custom-button ${isGoogleSignIn ? "google-sign-in" : ""} ${inverted ? "inverted" : ""} `}
       {...otherProps}
     >
       {children}

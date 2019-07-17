@@ -6,7 +6,7 @@ import { toggleCart } from '../../redux/cart/cartActions';
 
 function CartIcon({toggleCart}) {
     return (
-        <div class='cart-icon' onClick={toggleCart}>
+        <div className='cart-icon' onClick={toggleCart}>
             <ShoppingIcon className='shopping-icon' />
             <span className='item-count'>0</span>
         </div>
