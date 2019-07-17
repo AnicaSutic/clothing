@@ -16,7 +16,6 @@ export default class ShopPage extends Component {
                 {collections.map(({id, ...otherCollProps}) => (
                      <CollectionPreview key={id} {...otherCollProps}/>
                 ))}
-               
             </div>
         )
     }
