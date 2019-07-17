@@ -3,7 +3,6 @@ import { auth,createUserProfileDoc } from '../../firebase/firebase.utils';
 import './index.scss';
 import FormInput from '../FormInput';
 import CustomButton from '../CustomButton';
-import { async } from 'q';
 
 
 export default class SignUp extends Component {
