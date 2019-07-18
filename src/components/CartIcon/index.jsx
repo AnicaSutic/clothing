@@ -4,6 +4,8 @@ import './index.scss';
 import {connect} from 'react-redux';
 import { toggleCart } from '../../redux/cart/cartActions';
 import {selectCartItemsCount} from '../../redux/cart/cartSelectors'
+import { createStructuredSelector } from 'reselect';
+
 
 function CartIcon({toggleCart,itemCount}) {
     return (
@@ -14,11 +16,9 @@ function CartIcon({toggleCart,itemCount}) {
     )
 }
 // call selector to not render of not necesarry
-function mapStateToProps(state) {
-    return {
-        itemCount:selectCartItemsCount(state)
-    }
-}
+const mapStateToProps = createStructuredSelector({
+    itemCount:selectCartItemsCount
+})
 
 function mapDispatchToProps(dispatch) {
     return {
