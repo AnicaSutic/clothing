@@ -5,52 +5,50 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import ShopPage from "./pages/ShopPage";
 import Header from "./components/Header";
 import SignInUp from "./pages/SIgn/SIgnInUp";
-import {
-  auth,
-  createUserProfileDoc,
-  addCollectionsAndDoc
-} from "./firebase/firebase.utils";
+
 import { connect } from "react-redux";
-import { setCurrentUser } from "./redux/user/userActions";
 import { selectCurrentUser } from "./redux/user/userSelector";
 import { createStructuredSelector } from "reselect";
 import CheckoutPage from "./pages/CheckoutPage";
 import { selectShopCollectionForPreview } from "./redux/shop/shopSelector";
+import { checkUserSession } from "./redux/user/userActions";
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser, collectionsArray } = this.props;
+    const {checkUserSession} = this.props;
+    checkUserSession();
+    //const { setCurrentUser } = this.props;
     // this is a metoh in auth library, param is what is user state
     // this connection is always open and we need to close it in unmount
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        const userRef = await createUserProfileDoc(userAuth);
-        userRef.onSnapshot(snapshot => {
-          // this.setState({
-          //   currentUser: {
-          //     id: snapshot.id,
-          //     ...snapshot.data()
-          //   }
-          // }, () => {
-          //   console.log(this.state);
-          // });
-          setCurrentUser({
-            id: snapshot.id,
-            ...snapshot.data()
-          });
-        });
-      }
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   if (userAuth) {
+    //     const userRef = await createUserProfileDoc(userAuth);
+    //     userRef.onSnapshot(snapshot => {
+    //       // this.setState({
+    //       //   currentUser: {
+    //       //     id: snapshot.id,
+    //       //     ...snapshot.data()
+    //       //   }
+    //       // }, () => {
+    //       //   console.log(this.state);
+    //       // });
+    //       setCurrentUser({
+    //         id: snapshot.id,
+    //         ...snapshot.data()
+    //       });
+    //     });
+    //   }
 
-      setCurrentUser(userAuth);
-      // we just wanted programmicaly to add data to dataabse now it is not necessary
-      //addCollectionsAndDoc('collections',collectionsArray.map(({title,items}) => ({title,items})));
+    //   setCurrentUser(userAuth);
+    //   // we just wanted programmicaly to add data to dataabse now it is not necessary
+    //   //addCollectionsAndDoc('collections',collectionsArray.map(({title,items}) => ({title,items})));
 
-      // this.setState({
-      //   currentUser:user
-      // });
-    });
+    //   // this.setState({
+    //   //   currentUser:user
+    //   // });
+    // });
   }
 
   componentWillUnmount() {
@@ -79,18 +77,24 @@ class App extends React.Component {
   }
 }
 
+
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   collectionsArray: selectShopCollectionForPreview
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setCurrentUser: user => {
-      dispatch(setCurrentUser(user));
-    }
-  };
-}
+const mapDispatchToProps = dispatch => ({
+  checkUserSession : () => dispatch(checkUserSession())
+})
+
+// saga is handling now
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     setCurrentUser: user => {
+//       dispatch(setCurrentUser(user));
+//     }
+//   };
+// }
 
 export default connect(
   mapStateToProps,

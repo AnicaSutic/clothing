@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import MenuItem from "../MenuItem";
-import {connect}  from 'react-redux'
-
+import { connect } from "react-redux";
 
 import "./index.scss";
 import { selectDirectory } from "../../redux/directory/directorySelector";
@@ -10,7 +9,7 @@ class Directory extends Component {
     return (
       <div className="directory-menu">
         {this.props.sections.map(({ id, ...otherSecProps }) => (
-          <MenuItem key={id} {...otherSecProps}/>
+          <MenuItem key={id} {...otherSecProps} />
         ))}
       </div>
     );
@@ -20,7 +19,10 @@ class Directory extends Component {
 function mapStateToProps(state) {
   return {
     sections: selectDirectory(state)
-  }
+  };
 }
 
-export default connect(mapStateToProps,null)(Directory)
+export default connect(
+  mapStateToProps,
+  null
+)(Directory);

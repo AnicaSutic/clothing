@@ -1,38 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import "./index.scss";
-import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
 import CartIcon from "../CartIcon";
 import CartDropdown from "../CartDropdown";
-import {createStructuredSelector} from 'reselect';
+import { createStructuredSelector } from "reselect";
 import { selectCartHidden } from "../../redux/cart/cartSelectors";
 import { selectCurrentUser } from "../../redux/user/userSelector";
-import { HeaderContiner, LogoContainer, OptionsContainer, OptionLink, OptionDiv } from "./index.styles";
 
+import {
+  HeaderContiner,
+  LogoContainer,
+  OptionsContainer,
+  OptionLink,
+  OptionDiv
+} from "./index.styles";
+import { signOutStart } from "../../redux/user/userActions";
 
-function Header({ currentUser, hidden }) {
+function Header({ currentUser, hidden, signOutStart }) {
   return (
     <HeaderContiner>
       <LogoContainer to="/">
         <Logo className="logo" />
       </LogoContainer>
       <OptionsContainer>
-        <OptionLink to="/shop">
-          SHOP
-        </OptionLink>
-        <OptionLink to="/shop">
-          CONTACT
-        </OptionLink>
+        <OptionLink to="/shop">SHOP</OptionLink>
+        <OptionLink to="/shop">CONTACT</OptionLink>
         {currentUser ? (
-          <OptionDiv onClick={() => auth.signOut()}>
-            SIGN OUT
-          </OptionDiv>
+          <OptionDiv onClick={signOutStart}>SIGN OUT</OptionDiv>
         ) : (
-          <OptionLink to="/sign">
-            SIGN IN
-          </OptionLink>
+          <OptionLink to="/sign">SIGN IN</OptionLink>
         )}
         <CartIcon />
       </OptionsContainer>
@@ -43,11 +40,15 @@ function Header({ currentUser, hidden }) {
 
 // createStructuredSelector to pass state to this reselectors
 const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser,
-    hidden: selectCartHidden
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden
+});
+
+const mapDispatchToProps = dispatch => ({
+  signOutStart: () => dispatch(signOutStart())
 });
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Header);

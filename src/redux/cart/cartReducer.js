@@ -30,6 +30,11 @@ export default function cartReducer(state = initialState, action) {
           cartItem => cartItem.id !== action.payload.id
         )
       };
+    case actionType.CLEAR_CART:
+      return {
+        ...state,
+        cartItems: []
+      }
     default:
       return state;
   }

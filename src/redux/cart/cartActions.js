@@ -23,6 +23,12 @@ export function removeItem(item) {
 export function clearItemFromCart(item) {
   return {
     type: actionType.CLEAR_ITEM_FROM_CART,
-    payload:item
+    payload: item
+  };
+}
+
+export function clearCart() {
+  return {
+    type:actionType.CLEAR_CART
   }
 }

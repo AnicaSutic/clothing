@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { auth, createUserProfileDoc } from "../../firebase/firebase.utils";
 import "./index.scss";
 import FormInput from "../FormInput";
 import CustomButton from "../CustomButton";
+import {connect} from 'react-redux';
+import { signUpStart } from "../../redux/user/userActions";
 
-export default class SignUp extends Component {
+
+ class SignUp extends Component {
   constructor() {
     super();
     this.state = {
@@ -18,6 +20,7 @@ export default class SignUp extends Component {
   handleSubmit = async event => {
     event.preventDefault();
     const { displayName, email, password, confirmPassword } = this.state;
+    const {signUpStart} = this.props
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
@@ -28,22 +31,25 @@ export default class SignUp extends Component {
       return;
     }
 
-    try {
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      createUserProfileDoc(user, { displayName });
-      // to reset a form
-      this.setState({
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
+
+    signUpStart({email,password,displayName});
+
+    // try {
+    //   const { user } = await auth.createUserWithEmailAndPassword(
+    //     email,
+    //     password
+    //   );
+    //   createUserProfileDoc(user, { displayName });
+    //   // to reset a form
+    //   this.setState({
+    //     displayName: "",
+    //     email: "",
+    //     password: "",
+    //     confirmPassword: ""
+    //   });
+    // } catch (error) {
+    //   console.log(error.message);
+    // }
   };
 
   handleChange = event => {
@@ -55,6 +61,7 @@ export default class SignUp extends Component {
 
   render() {
     const { displayName, email, password, confirmPassword } = this.state;
+    const {error} = this.props
     return (
       <div className="sign-up">
         <h2 className="title">I do not have a account</h2>
@@ -94,7 +101,22 @@ export default class SignUp extends Component {
           />
           <CustomButton type="submit">SIGN UP</CustomButton>
         </form>
+        <p style={{color:'red'}}>{error}</p>
       </div>
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    signUpStart: (userCredentials)=> dispatch(signUpStart(userCredentials))
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    error: state.user.error
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(SignUp)
