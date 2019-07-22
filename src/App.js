@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./App.css";
 import HomePage from "./pages/HomePage";
 import { Route, Switch, Redirect } from "react-router-dom";
@@ -13,12 +13,18 @@ import CheckoutPage from "./pages/CheckoutPage";
 import { selectShopCollectionForPreview } from "./redux/shop/shopSelector";
 import { checkUserSession } from "./redux/user/userActions";
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
+function App({checkUserSession, currentUser}) {
 
-  componentDidMount() {
-    const {checkUserSession} = this.props;
-    checkUserSession();
+  // we want just for the first time to run
+  // because if user change we want to render
+  useEffect(() => {
+    checkUserSession()
+  }, [checkUserSession])
+
+
+  // componentDidMount() {
+  //   const {checkUserSession} = this.props;
+  //   checkUserSession();
     //const { setCurrentUser } = this.props;
     // this is a metoh in auth library, param is what is user state
     // this connection is always open and we need to close it in unmount
@@ -49,14 +55,14 @@ class App extends React.Component {
     //   //   currentUser:user
     //   // });
     // });
-  }
+  // }
 
-  componentWillUnmount() {
-    // to close subscription and connection
-    this.unsubscribeFromAuth();
-  }
+  // componentWillUnmount() {
+  //   // to close subscription and connection
+  //   this.unsubscribeFromAuth();
+  // }
 
-  render() {
+
     return (
       <div>
         <Header />
@@ -68,14 +74,14 @@ class App extends React.Component {
             exact
             path="/sign"
             render={() =>
-              this.props.currentUser ? <Redirect to="/" /> : <SignInUp />
+              currentUser ? <Redirect to="/" /> : <SignInUp />
             }
           />
         </Switch>
       </div>
     );
   }
-}
+
 
 
 const mapStateToProps = createStructuredSelector({

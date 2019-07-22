@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import "./index.scss";
 import FormInput from "../FormInput";
 import CustomButton from "../CustomButton";
@@ -6,21 +6,29 @@ import {connect} from 'react-redux';
 import { signUpStart } from "../../redux/user/userActions";
 
 
- class SignUp extends Component {
-  constructor() {
-    super();
-    this.state = {
+ function SignUp({signUpStart,error}) {
+  // constructor() {
+  //   super();
+  //   this.state = {
+  //     displayName: "",
+  //     email: "",
+  //     password: "",
+  //     confirmPassword: ""
+  //   };
+  // }
+
+  const [userCredetials,setUserCredentials] = useState({ 
       displayName: "",
       email: "",
       password: "",
-      confirmPassword: ""
-    };
-  }
+      confirmPassword: ""})
 
-  handleSubmit = async event => {
+      const { displayName, email, password, confirmPassword } = userCredetials;
+
+
+  const handleSubmit = async event => {
     event.preventDefault();
-    const { displayName, email, password, confirmPassword } = this.state;
-    const {signUpStart} = this.props
+
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
@@ -52,26 +60,25 @@ import { signUpStart } from "../../redux/user/userActions";
     // }
   };
 
-  handleChange = event => {
+  const handleChange = event => {
     const { name, value } = event.target;
-    this.setState({
+    setUserCredentials({
+      ...userCredetials,
       [name]: value
     });
   };
 
-  render() {
-    const { displayName, email, password, confirmPassword } = this.state;
-    const {error} = this.props
+ 
     return (
       <div className="sign-up">
         <h2 className="title">I do not have a account</h2>
         <span>Sign up with your email and password</span>
-        <form className="sign-up-form" onSubmit={this.handleSubmit}>
+        <form className="sign-up-form" onSubmit={handleSubmit}>
           <FormInput
             type="text"
             name="displayName"
             value={displayName}
-            handleChange={this.handleChange}
+            handleChange={handleChange}
             label="Display Name"
             required
           />
@@ -79,7 +86,7 @@ import { signUpStart } from "../../redux/user/userActions";
             type="email"
             name="email"
             value={email}
-            handleChange={this.handleChange}
+            handleChange={handleChange}
             label="Email"
             required
           />
@@ -87,7 +94,7 @@ import { signUpStart } from "../../redux/user/userActions";
             type="password"
             name="password"
             value={password}
-            handleChange={this.handleChange}
+            handleChange={handleChange}
             label="Password"
             required
           />
@@ -95,7 +102,7 @@ import { signUpStart } from "../../redux/user/userActions";
             type="password"
             name="confirmPassword"
             value={confirmPassword}
-            handleChange={this.handleChange}
+            handleChange={handleChange}
             label="Confirm Password"
             required
           />
@@ -105,7 +112,7 @@ import { signUpStart } from "../../redux/user/userActions";
       </div>
     );
   }
-}
+
 
 function mapDispatchToProps(dispatch) {
   return {

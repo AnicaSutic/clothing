@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchCollectionsStart } from "../../redux/shop/shopActions";
@@ -8,13 +8,14 @@ import { CollectionsOverviewContainer } from "../../components/CollectionsOvervi
 import CollectionPageContainer from "../CollectionPage/index.container";
 
 
-class ShopPage extends Component {
-  componentDidMount() {
-    this.props.fetchCollectionsStart()
-  }
+function ShopPage({fetchCollectionsStart,match}) {
+  // componentDidMount() {
+  //   this.props.fetchCollectionsStart()
+  // }
+    useEffect(() => {
+      fetchCollectionsStart()
+    },[fetchCollectionsStart]) // instead of empty array
 
-  render() {
-    const { match } = this.props;
     return (
       <div className="shop-page">
         <Route
@@ -41,7 +42,7 @@ class ShopPage extends Component {
       </div>
     );
   }
-}
+
 
 const mapStateToProps = createStructuredSelector({
   isCollectionLoaded: selectIsCollectionLoaded
