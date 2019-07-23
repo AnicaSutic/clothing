@@ -4,6 +4,7 @@ import Directory from '../../components/Directory';
 import { HomePageContainer } from './index.styles';
 
 export default function HomePage() {
+     //throw Error; //for check when error is thrown
     return (
         <HomePageContainer>
             <Directory />

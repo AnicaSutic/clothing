@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import "./App.scss";
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
 import { Route, Switch, Redirect } from "react-router-dom";
-import ShopPage from "./pages/ShopPage";
+// import ShopPage from "./pages/ShopPage";
 import Header from "./components/Header";
 import SignInUp from "./pages/SIgn/SIgnInUp";
 
@@ -12,49 +12,52 @@ import { createStructuredSelector } from "reselect";
 import CheckoutPage from "./pages/CheckoutPage";
 import { selectShopCollectionForPreview } from "./redux/shop/shopSelector";
 import { checkUserSession } from "./redux/user/userActions";
+import ErrorBoundary from "./components/error-boundary/error-boundary.component";
 
-function App({checkUserSession, currentUser}) {
+// do that for all components
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ShopPage = lazy(() => import("./pages/ShopPage"));
 
+function App({ checkUserSession, currentUser }) {
   // we want just for the first time to run
   // because if user change we want to render
   useEffect(() => {
-    checkUserSession()
-  }, [checkUserSession])
-
+    checkUserSession();
+  }, [checkUserSession]);
 
   // componentDidMount() {
   //   const {checkUserSession} = this.props;
   //   checkUserSession();
-    //const { setCurrentUser } = this.props;
-    // this is a metoh in auth library, param is what is user state
-    // this connection is always open and we need to close it in unmount
-    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-    //   if (userAuth) {
-    //     const userRef = await createUserProfileDoc(userAuth);
-    //     userRef.onSnapshot(snapshot => {
-    //       // this.setState({
-    //       //   currentUser: {
-    //       //     id: snapshot.id,
-    //       //     ...snapshot.data()
-    //       //   }
-    //       // }, () => {
-    //       //   console.log(this.state);
-    //       // });
-    //       setCurrentUser({
-    //         id: snapshot.id,
-    //         ...snapshot.data()
-    //       });
-    //     });
-    //   }
+  //const { setCurrentUser } = this.props;
+  // this is a metoh in auth library, param is what is user state
+  // this connection is always open and we need to close it in unmount
+  // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+  //   if (userAuth) {
+  //     const userRef = await createUserProfileDoc(userAuth);
+  //     userRef.onSnapshot(snapshot => {
+  //       // this.setState({
+  //       //   currentUser: {
+  //       //     id: snapshot.id,
+  //       //     ...snapshot.data()
+  //       //   }
+  //       // }, () => {
+  //       //   console.log(this.state);
+  //       // });
+  //       setCurrentUser({
+  //         id: snapshot.id,
+  //         ...snapshot.data()
+  //       });
+  //     });
+  //   }
 
-    //   setCurrentUser(userAuth);
-    //   // we just wanted programmicaly to add data to dataabse now it is not necessary
-    //   //addCollectionsAndDoc('collections',collectionsArray.map(({title,items}) => ({title,items})));
+  //   setCurrentUser(userAuth);
+  //   // we just wanted programmicaly to add data to dataabse now it is not necessary
+  //   //addCollectionsAndDoc('collections',collectionsArray.map(({title,items}) => ({title,items})));
 
-    //   // this.setState({
-    //   //   currentUser:user
-    //   // });
-    // });
+  //   // this.setState({
+  //   //   currentUser:user
+  //   // });
+  // });
   // }
 
   // componentWillUnmount() {
@@ -62,27 +65,26 @@ function App({checkUserSession, currentUser}) {
   //   this.unsubscribeFromAuth();
   // }
 
-
-    return (
-      <div>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/shop" component={ShopPage} />
+  return (
+    <div>
+      <Header />
+      <Switch>
+        <ErrorBoundary>
+          <Suspense fallback={<div>Loading....</div>}>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/shop" component={ShopPage} />
+          </Suspense>
           <Route exact path="/checkout" component={CheckoutPage} />
           <Route
             exact
             path="/sign"
-            render={() =>
-              currentUser ? <Redirect to="/" /> : <SignInUp />
-            }
+            render={() => (currentUser ? <Redirect to="/" /> : <SignInUp />)}
           />
-        </Switch>
-      </div>
-    );
-  }
-
-
+        </ErrorBoundary>
+      </Switch>
+    </div>
+  );
+}
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
@@ -90,8 +92,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  checkUserSession : () => dispatch(checkUserSession())
-})
+  checkUserSession: () => dispatch(checkUserSession())
+});
 
 // saga is handling now
 // function mapDispatchToProps(dispatch) {
